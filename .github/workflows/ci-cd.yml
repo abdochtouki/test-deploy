@@ -1,23 +1,24 @@
-name: Deploy to Ubuntu Server
+name: Deploy to Ubuntu on SSH event
 
 on:
   push:
-    branches:
-      - main  # or the branch you want to trigger the action
-
+    branches: 
+      - "main"
+  # Inputs the workflow accepts.
+  # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  # This workflow contains a single job called "greet"
   deploy:
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Deploy to server
-        run: |
-          ssh -o StrictHostKeyChecking=no abdo@192.168.3.7 "cd /var/www/test-deploy && git pull"
+    - name: Deploy
+      # Runs a single command using the runner's shell
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        port: 22
